@@ -1,0 +1,5 @@
+HTTP.REQ.HEADER("Demo").CONTAINS("mycitrixdemo.net
+
+HTTP.REQ.URL.CONTAINS("test.php")
+
+HTTP.REQ.URL.CONTAINS("white.html")
