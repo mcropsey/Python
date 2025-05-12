@@ -1,0 +1,55 @@
+import os
+
+def main():
+    # Read search terms from search-items.txt
+    search_terms_file = "search-items.txt"
+    try:
+        with open(search_terms_file, "r") as f:
+            # Get non-empty lines, stripping whitespace
+            search_terms = [line.strip() for line in f if line.strip()]
+    except Exception as e:
+        print(f"Error reading {search_terms_file}: {e}")
+        return
+
+    # Define the output file; using 'w' mode will overwrite it each time the script runs.
+    output_file = "logparse-results.txt"
+    try:
+        out = open(output_file, "w")
+    except Exception as e:
+        print(f"Error opening {output_file} for writing: {e}")
+        return
+
+    # Define a separator line full of asterisks
+    separator = "*" * 80
+
+    # Define the logs directory (should be in the same folder as this script)
+    logs_dir = "logs"
+    if not os.path.exists(logs_dir):
+        print(f"Logs directory '{logs_dir}' does not exist.")
+        out.close()
+        return
+
+    # Loop through all files in the logs directory
+    for filename in os.listdir(logs_dir):
+        file_path = os.path.join(logs_dir, filename)
+        # Make sure we're only reading files
+        if os.path.isfile(file_path):
+            try:
+                # Open each log file (ignoring errors in encoding)
+                with open(file_path, "r", errors="ignore") as log_file:
+                    for line in log_file:
+                        # Check if any search term is in the line (ignoring case)
+                        if any(term.lower() in line.lower() for term in search_terms):
+                            out.write(separator + "\n")
+                            out.write(f"File: {filename}\n")
+                            out.write(line.rstrip() + "\n")
+                            out.write(separator + "\n\n")
+            except Exception as e:
+                print(f"Error reading file {file_path}: {e}")
+
+    out.close()
+    print(f"Search complete. Results written to {output_file}")
+
+if __name__ == "__main__":
+    main()
+
