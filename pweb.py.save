@@ -1,0 +1,53 @@
+from flask import Flask, render_template_string
+import socket
+
+app = Flask(__name__)
+
+# Define colors based on hostname
+hostname_colors = {
+    'localhost': 'lightblue',
+    'server1': 'lightgreen',
+    'server2': 'lightcoral',
+    'server3': 'lightgoldenrodyellow',
+}
+
+@app.route('/')
+def index():
+    # Get the server's hostname
+    hostname = socket.gethostname()
+    
+    # Determine the background color based on the hostname
+    background_color = hostname_colors.get(hostname, 'white')  # Default to white if hostname not found
+
+    # Render the HTML with the background color
+    html = f'''
+    <!doctype html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Background Color by Hostname</title>
+        <style>
+            body {{
+                background-color: {background_color};
+                height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 2rem;
+            }}
+        </style>
+    </head>
+    <body>
+        <div>
+            <h1>Hostname: {hostname}</h1>
+            <p>Background color: {background_color}</p>
+        </div>
+    </body>
+    </html>
+    '''
+    return render_template_string(html)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
